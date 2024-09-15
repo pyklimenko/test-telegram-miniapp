@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
         }
 
         console.log('No matching document found');
-        return res.status(404).json({ email: 'Not found', _id: 'Not found' });
+        return res.status(404).json({ email: 'Not ffound', _id: 'Not ffound' });
     } catch (error) {
         console.error('Database query error:', error);
         return res.status(500).json({ error: 'Ошибка сервера' });
