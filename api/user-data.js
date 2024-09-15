@@ -33,15 +33,12 @@ module.exports = async (req, res) => {
     try {
         const db = await connectToDatabase();
 
-        // Преобразуем tgId в строку
-        const stringTgId = String(tgId);
+        // Преобразуем tgId в число, если оно не является числом
+        const numericTgId = parseInt(tgId, 10);
 
-        // Логируем запрос
-        console.log(`Searching for tgId: ${tgId}`);
-
-        // Поиск пользователя в коллекциях Students и Teachers
-        const student = await db.collection('Students').findOne({ tgId: stringTgId });
-        const teacher = await db.collection('Teachers').findOne({ tgId: stringTgId });
+        // Ищем в базе данных как int32
+        const student = await db.collection('Students').findOne({ tgId: numericTgId });
+        const teacher = await db.collection('Teachers').findOne({ tgId: numericTgId });
 
         if (student) {
             console.log('Student found:', student);
