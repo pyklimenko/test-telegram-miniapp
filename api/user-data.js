@@ -36,8 +36,6 @@ module.exports = async (req, res) => {
         // Логируем запрос
         console.log(`Searching for tgId: ${tgId}`);
 
-
-
         // Поиск пользователя в коллекциях Students и Teachers
         const student = await db.collection('Students').findOne({ tgId });
         if (student) {
@@ -49,13 +47,6 @@ module.exports = async (req, res) => {
         if (teacher) {
             console.log('Teacher found:', teacher);
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
-        }
-
-        const { lastName } = 'Klimenko';
-        const test = await db.collection('Teachers').findOne({ lastName });
-        if (test) {
-            console.log('Teacher found:', test);
-            return res.status(200).json({ email: 'teacher.email', _id: 'teacher._id' });
         }
 
         console.log('No matching document found');
