@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Функция для отправки tgId на сервер и получения данных пользователя
 async function fetchUserData(tgId) {
-    const response = await fetch(`/pages/api/user-data?tgId=${tgId}`);
+    const response = await fetch(`/user-data?tgId=${tgId}`);
     if (!response.ok) {
         throw new Error('Ошибка сети при запросе данных пользователя');
     }
