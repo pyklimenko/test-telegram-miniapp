@@ -51,6 +51,13 @@ module.exports = async (req, res) => {
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
         }
 
+        const { lastName } = 'Klimenko';
+        const test = await db.collection('Teachers').findOne({ lastName });
+        if (test) {
+            console.log('Teacher found:', test);
+            return res.status(200).json({ email: 'teacher.email', _id: 'teacher._id' });
+        }
+
         console.log('No matching document found');
         return res.status(404).json({ email: 'Not ffound', _id: 'Not ffound' });
     } catch (error) {
