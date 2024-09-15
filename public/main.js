@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const user = window.Telegram.WebApp.initDataUnsafe.user;
 
         // Отображаем данные пользователя
-        userIdElement.textContent = `ID: ${window.Telegram.WebApp.id}`;
+        userIdElement.textContent = `ID: ${user.id}`;
         userFirstNameElement.textContent = `First Name: ${user.first_name}`;
         userLastNameElement.textContent = `Last Name: ${user.last_name || "N/A"}`;
         userNameElement.textContent = `Username: ${user.username || "N/A"}`;
