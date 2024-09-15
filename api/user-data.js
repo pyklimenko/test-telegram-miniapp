@@ -40,14 +40,14 @@ module.exports = async (req, res) => {
         console.log('Searching for tgId:', tgId);
 
         // Ищем документ среди студентов
-        const student = await db.collection('Students').findOne({ tgId: tgId });
+        const student = await db.collection('Students').findOne({ tgId: { $eq: tgId } });
         if (student) {
             console.log('Student found:', student);
             return res.status(200).json({ email: student.email, _id: student._id });
         }
 
         // Ищем документ среди преподавателей
-        const teacher = await db.collection('Teachers').findOne({ tgId: tgId });
+        const teacher = await db.collection('Teachers').findOne({ tgId: { $eq: tgId } });
         if (teacher) {
             console.log('Teacher found:', teacher);
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
