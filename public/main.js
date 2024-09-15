@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
         const user = window.Telegram.WebApp.initDataUnsafe.user;
 
+        console.log('Type of user.id:', typeof user.id); // Проверка типа данных
+        console.log('user.id:', user.id); // Проверка значения
+
         // Отображаем данные пользователя из Telegram
         userIdElement.textContent = `ID: ${user.id}`;
         userFirstNameElement.textContent = `First Name: ${user.first_name}`;
