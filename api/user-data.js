@@ -31,20 +31,23 @@ module.exports = async (req, res) => {
     }
 
     try {
+        console.log('Connecting to MongoDB...');
         const db = await connectToDatabase();
+        console.log('Connected to MongoDB');
 
-        // Преобразуем tgId в число, если оно не является числом
-        const numericTgId = parseInt(tgId, 10);
+        // Преобразуем tgId из строки в число
+        const tgId = parseInt(req.query.tgId, 10);
+        console.log('Searching for tgId:', tgId);
 
-        // Ищем в базе данных как int32
-        const student = await db.collection('Students').findOne({ tgId: numericTgId });
-        const teacher = await db.collection('Teachers').findOne({ tgId: numericTgId });
-
+        // Ищем документ среди студентов
+        const student = await db.collection('Students').findOne({ tgId });
         if (student) {
             console.log('Student found:', student);
             return res.status(200).json({ email: student.email, _id: student._id });
         }
 
+        // Ищем документ среди преподавателей
+        const teacher = await db.collection('Teachers').findOne({ tgId });
         if (teacher) {
             console.log('Teacher found:', teacher);
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
