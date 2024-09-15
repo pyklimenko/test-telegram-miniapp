@@ -33,17 +33,21 @@ module.exports = async (req, res) => {
     try {
         const db = await connectToDatabase();
 
+        // Преобразуем tgId в строку
+        const stringTgId = String(tgId);
+
         // Логируем запрос
         console.log(`Searching for tgId: ${tgId}`);
 
         // Поиск пользователя в коллекциях Students и Teachers
-        const student = await db.collection('Students').findOne({ tgId });
+        const student = await db.collection('Students').findOne({ tgId: stringTgId });
+        const teacher = await db.collection('Teachers').findOne({ tgId: stringTgId });
+
         if (student) {
             console.log('Student found:', student);
             return res.status(200).json({ email: student.email, _id: student._id });
         }
 
-        const teacher = await db.collection('Teachers').findOne({ tgId });
         if (teacher) {
             console.log('Teacher found:', teacher);
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
