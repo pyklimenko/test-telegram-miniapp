@@ -1,0 +1,15 @@
+{
+  "name": "test-telegram-miniapp",
+  "version": "1.0.0",
+  "description": "Telegram MiniApp for displaying user information",
+  "main": "public/main.js",
+  "scripts": {
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
