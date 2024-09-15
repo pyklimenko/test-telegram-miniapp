@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+    console.log('DOM полностью загружен');
+
     const userIdElement = document.getElementById("userId");
     const userFirstNameElement = document.getElementById("userFirstName");
     const userLastNameElement = document.getElementById("userLastName");
