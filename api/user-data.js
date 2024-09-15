@@ -23,6 +23,8 @@ async function connectToDatabase() {
 module.exports = async (req, res) => {
     const { tgId } = req.query;
 
+    console.log(`Сейчас будем искать ${tgId}`);
+
     if (!tgId) {
         console.error('tgId is missing');
         return res.status(400).json({ error: 'tgId не предоставлен' });
@@ -33,6 +35,8 @@ module.exports = async (req, res) => {
 
         // Логируем запрос
         console.log(`Searching for tgId: ${tgId}`);
+
+
 
         // Поиск пользователя в коллекциях Students и Teachers
         const student = await db.collection('Students').findOne({ tgId });
