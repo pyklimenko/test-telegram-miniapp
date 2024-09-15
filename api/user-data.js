@@ -1,5 +1,7 @@
 const { MongoClient } = require('mongodb');
 
+console.log(`Сейчас будем искать ${tgId}`);
+
 const uri = process.env.MARHI_MONGODB_URI;
 let client = null;
 
