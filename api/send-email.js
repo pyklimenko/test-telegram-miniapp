@@ -1,15 +1,17 @@
 const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
 
+// Область доступа для Gmail API
 const SCOPES = ['https://www.googleapis.com/auth/gmail.send'];
 
 async function authorize() {
-    const credentials = JSON.parse(fs.readFileSync(path.join(__dirname, 'credentials.json')));
-    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    // Используем переменные окружения вместо файла credentials.json
+    const client_id = process.env.CLIENT_ID;
+    const client_secret = process.env.CLIENT_SECRET;
+    const redirect_uris = [process.env.REDIRECT_URIS];
+
     const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
-    // Если токен уже сохранен в переменных окружения, используем его
+    // Устанавливаем токены из переменных окружения
     const accessToken = process.env.GMAIL_ACCESS_TOKEN;
     const refreshToken = process.env.GMAIL_REFRESH_TOKEN;
 
@@ -21,15 +23,10 @@ async function authorize() {
         return oAuth2Client;
     }
 
-    // Если токен отсутствует, запрашиваем новый
-    const authUrl = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES,
-    });
-    console.log('Authorize this app by visiting this URL:', authUrl);
+    throw new Error('Токены отсутствуют в переменных окружения');
 }
 
-// Функция для отправки письма
+// Функция для отправки email
 async function sendEmail(auth, to, subject, message) {
     const gmail = google.gmail({ version: 'v1', auth });
 
@@ -52,7 +49,7 @@ async function sendEmail(auth, to, subject, message) {
     console.log(`Email sent: ${result.data.id}`);
 }
 
-// Основная функция для вызова из других частей кода
+// Основная функция для отправки email
 async function sendGmail(to, subject, message) {
     try {
         const auth = await authorize(); // Авторизация через OAuth2
@@ -62,5 +59,5 @@ async function sendGmail(to, subject, message) {
     }
 }
 
-// Экспортируем функцию для использования в других файлах
+// Экспорт функции для использования в других файлах
 module.exports = sendGmail;
