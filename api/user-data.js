@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
         }
 
         // Запрашиваем все документы из коллекции Teachers
-        const teachers = await db.collection('Teachers').find({}).toArray();
+        const teachers = await db.collection('Semesters').find({}).toArray();
         if (teachers.length > 0) {
             console.log('All teachers:', JSON.stringify(teachers, null, 2));
         } else {
