@@ -29,10 +29,38 @@ async function authorize() {
     console.log('Authorize this app by visiting this URL:', authUrl);
 }
 
-async function saveToken(oAuth2Client, token) {
-    // Сохраняем токены в переменных окружения
-    process.env.GMAIL_ACCESS_TOKEN = token.access_token;
-    process.env.GMAIL_REFRESH_TOKEN = token.refresh_token;
+// Функция для отправки письма
+async function sendEmail(auth, to, subject, message) {
+    const gmail = google.gmail({ version: 'v1', auth });
 
-    // В Vercel добавь эти переменные окружения через панель управления.
+    const email = [
+        `To: ${to}`,
+        'Subject: ' + subject,
+        '',
+        message,
+    ].join('\n');
+
+    const encodedMessage = Buffer.from(email).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+    const result = await gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+            raw: encodedMessage,
+        },
+    });
+
+    console.log(`Email sent: ${result.data.id}`);
 }
+
+// Основная функция для вызова из других частей кода
+async function sendGmail(to, subject, message) {
+    try {
+        const auth = await authorize(); // Авторизация через OAuth2
+        await sendEmail(auth, to, subject, message); // Отправка письма
+    } catch (error) {
+        console.error('Ошибка при отправке письма:', error);
+    }
+}
+
+// Экспортируем функцию для использования в других файлах
+module.exports = sendGmail;

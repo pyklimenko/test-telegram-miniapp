@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const sendEmail = require('./send-email'); // Импортируем функцию отправки письма
+const sendEmail = require('./send-email'); // Импортируем функцию отправки email
 
 const uri = process.env.MARHI_MONGODB_URI;
 let client = null;
@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
             console.log('Teacher found:', teacher);
 
             // Отправляем письмо пользователю (тест)
-            await sendEmail(teacher.email, 'Вы найдены!', teacher.tgId);
+            await sendEmail(teacher.email, 'Вы найдены!', 'Ваши данные были найдены в нашей базе.');
 
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
         }
