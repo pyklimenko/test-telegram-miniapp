@@ -8,7 +8,7 @@ let client = null;
 async function connectToDatabase() {
     if (!client) {
         console.log('Подключение к MongoDB...');
-        client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        client = new MongoClient(uri);
 
         try {
             await client.connect();
@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
             console.log('Teacher found:', teacher);
 
             // Отправляем письмо пользователю (тест)
-            const subject = 'Авторизация в MARHIEduTrack';
+            const subject = 'Регистрация в MARHIEduTrack';
             const message = `Привет, ${teacher.firstName}. Чтобы завершить регистрацию, используй код ${teacher.tgId} в приложении.`;
 
             await sendEmail(teacher.email, subject, message);
