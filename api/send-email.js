@@ -29,10 +29,13 @@ async function authorize() {
 async function sendEmail(auth, to, subject, message) {
     const gmail = google.gmail({ version: 'v1', auth });
 
-    // Формируем сообщение
+    // Кодируем тему письма в Base64 с указанием UTF-8
+    const subjectBase64 = `=?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`;
+
+    // Формируем сообщение с заголовком темы в Base64
     const email = [
         `To: ${to}`,
-        `Subject: ${subject}`,
+        `Subject: ${subjectBase64}`,
         'MIME-Version: 1.0',
         'Content-Type: text/plain; charset="UTF-8"',
         'Content-Transfer-Encoding: 7bit',
@@ -40,7 +43,7 @@ async function sendEmail(auth, to, subject, message) {
         message,
     ].join('\n');
 
-    // Кодируем сообщение в base64
+    // Кодируем сообщение в Base64
     const encodedMessage = Buffer.from(email)
         .toString('base64')
         .replace(/\+/g, '-')
