@@ -6,14 +6,14 @@ let client = null;
 // Подключение к базе данных
 async function connectToDatabase() {
     if (!client) {
-        console.log('Connecting to MongoDB...');
+        console.log('Подключение к MongoDB...');
         client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
         try {
             await client.connect();
-            console.log('Connected to MongoDB');
+            console.log('Подключён MongoDB');
         } catch (error) {
-            console.error('Failed to connect to MongoDB:', error);
+            console.error('Ошибка подключения к MongoDB:', error);
             throw error;
         }
     }
