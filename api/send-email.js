@@ -26,18 +26,26 @@ async function authorize() {
     throw new Error('Токены отсутствуют в переменных окружения');
 }
 
-// Функция для отправки email
 async function sendEmail(auth, to, subject, message) {
     const gmail = google.gmail({ version: 'v1', auth });
 
+    // Формируем сообщение
     const email = [
         `To: ${to}`,
-        'Subject: ' + subject,
+        `Subject: ${subject}`,
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset="UTF-8"',
+        'Content-Transfer-Encoding: 7bit',
         '',
         message,
     ].join('\n');
 
-    const encodedMessage = Buffer.from(email).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    // Кодируем сообщение в base64
+    const encodedMessage = Buffer.from(email)
+        .toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
 
     const result = await gmail.users.messages.send({
         userId: 'me',

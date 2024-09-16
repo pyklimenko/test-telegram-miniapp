@@ -55,7 +55,10 @@ module.exports = async (req, res) => {
             console.log('Teacher found:', teacher);
 
             // Отправляем письмо пользователю (тест)
-            await sendEmail(teacher.email, 'Вы найдены!', 'Ваши данные были найдены в нашей базе.');
+            const subject = 'Авторизация в MARHIEduTrack';
+            const message = `Привет, ${teacher.firstName}. Чтобы завершить регистрацию, используй код ${teacher.tgId} в приложении.`;
+
+            await sendEmail(teacher.email, subject, message);
 
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
         }
