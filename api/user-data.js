@@ -53,8 +53,11 @@ module.exports = async (req, res) => {
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
         }
 
+        // Проверка подключена ли ты к правильной базе данных.
+        console.log('Current database:', db.databaseName);
+
         // Запрашиваем все документы из коллекции Teachers
-        const teachers = await db.collection('Semesters').find({}).toArray();
+        const teachers = await db.collection('Teachers').find({}).toArray();
         if (teachers.length > 0) {
             console.log('All teachers:', JSON.stringify(teachers, null, 2));
         } else {
