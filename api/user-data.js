@@ -53,6 +53,14 @@ module.exports = async (req, res) => {
             return res.status(200).json({ email: teacher.email, _id: teacher._id });
         }
 
+        // Запрашиваем все документы из коллекции Teachers
+        const teachers = await db.collection('Teachers').find({}).toArray();
+        if (teachers.length > 0) {
+            console.log('All teachers:', JSON.stringify(teachers, null, 2));
+        } else {
+            console.log('No teachers found');
+        }
+
         console.log('No matching document found');
         return res.status(404).json({ email: 'Not ffound', _id: 'Not ffound' });
     } catch (error) {
