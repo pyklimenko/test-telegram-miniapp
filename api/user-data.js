@@ -8,6 +8,8 @@ async function connectToDatabase() {
     if (!client) {
         console.log('Connecting to MongoDB...');
         client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('MARHI'); // Указываем явное имя базы данных
+
         try {
             await client.connect();
             console.log('Connected to MongoDB');
