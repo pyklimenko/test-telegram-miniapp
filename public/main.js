@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log('DOM полностью загружен');
+    
+    const loadingElement = document.getElementById("loading");
+    const userInfoElement = document.getElementById("user-info");
+
+    // Показ троббера при загрузке страницы
+    loadingElement.style.display = "block";
 
     const userIdElement = document.getElementById("userId");
     const userFirstNameElement = document.getElementById("userFirstName");
@@ -8,30 +13,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const userEmailElement = document.getElementById("email");
     const userDbIdElement = document.getElementById("db-id");
 
-    // Проверка, доступен ли объект Telegram WebApp
     if (window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
         const user = window.Telegram.WebApp.initDataUnsafe.user;
 
-        console.log('Type of user.id:', typeof user.id); // Проверка типа данных
-        console.log('user.id:', user.id); // Проверка значения
-
-        // Отображаем данные пользователя из Telegram
-        userIdElement.textContent = `ID: ${user.id}`;
-        userFirstNameElement.textContent = `First Name: ${user.first_name}`;
-        userLastNameElement.textContent = `Last Name: ${user.last_name || "N/A"}`;
-        userNameElement.textContent = `Username: ${user.username || "N/A"}`;
-
-        // Получаем данные из MongoDB по ID пользователя (tgId)
+        // Показ данных пользователя
         fetchUserData(user.id).then(userData => {
+            // Прячем троббер и показываем информацию о пользователе
+            loadingElement.style.display = "none";
+            userInfoElement.style.display = "block";
+
+            userIdElement.textContent = `ID: ${user.id}`;
+            userFirstNameElement.textContent = `First Name: ${user.first_name}`;
+            userLastNameElement.textContent = `Last Name: ${user.last_name || "N/A"}`;
+            userNameElement.textContent = `Username: ${user.username || "N/A"}`;
             userEmailElement.textContent = `Email: ${userData.email}`;
             userDbIdElement.textContent = `Database ID: ${userData._id}`;
         }).catch(error => {
+            loadingElement.style.display = "none";
             console.error("Ошибка при получении данных из базы:", error);
-            userEmailElement.textContent = "Email: Not Found";
-            userDbIdElement.textContent = "Database ID: Not Found";
+            // Если пользователя не нашли, покажем страницу регистрации
+            showRegistrationPage();
         });
     } else {
+        loadingElement.style.display = "none";
         console.error("Telegram WebApp не инициализирован или пользователь не доступен");
+        showRegistrationPage();
     }
 });
 
@@ -42,4 +48,10 @@ async function fetchUserData(tgId) {
         throw new Error('Ошибка сети при запросе данных пользователя');
     }
     return response.json();
+}
+
+function showRegistrationPage() {
+    const userInfoElement = document.getElementById("user-info");
+    userInfoElement.innerHTML = "<h2>Здесь будет реализована регистрация пользователя</h2>";
+    userInfoElement.style.display = "block";
 }
