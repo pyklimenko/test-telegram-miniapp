@@ -1,41 +1,41 @@
-// v.2
-
 const { google } = require('googleapis');
 const googleAuthorize = require('./google-auth');
 
 async function sendGmail(to, subject, message) {
-    const auth = await googleAuthorize();
-    const gmail = google.gmail({ version: 'v1', auth });
+    try {
+        const auth = await googleAuthorize();
+        const gmail = google.gmail({ version: 'v1', auth });
 
-    // Кодируем тему письма в Base64 с указанием UTF-8
-    const subjectBase64 = `=?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`;
+        const subjectBase64 = `=?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`;
+        const email = [
+            `To: ${to}`,
+            `Subject: ${subjectBase64}`,
+            'MIME-Version: 1.0',
+            'Content-Type: text/plain; charset="UTF-8"',
+            'Content-Transfer-Encoding: 7bit',
+            '',
+            message,
+        ].join('\n');
 
-    // Формируем сообщение
-    const email = [
-        `To: ${to}`,
-        `Subject: ${subjectBase64}`,
-        'MIME-Version: 1.0',
-        'Content-Type: text/plain; charset="UTF-8"',
-        'Content-Transfer-Encoding: 7bit',
-        '',
-        message,
-    ].join('\n');
+        const encodedMessage = Buffer.from(email)
+            .toString('base64')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
 
-    // Кодируем сообщение в Base64
-    const encodedMessage = Buffer.from(email)
-        .toString('base64')
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
+        const result = await gmail.users.messages.send({
+            userId: 'me',
+            requestBody: {
+                raw: encodedMessage,
+            },
+        });
 
-    const result = await gmail.users.messages.send({
-        userId: 'me',
-        requestBody: {
-            raw: encodedMessage,
-        },
-    });
-
-    console.log(`Письмо отправлено: ${result.data.id}`);
+        console.log(`Письмо отправлено: ${result.data.id}`);
+    } catch (error) {
+        console.error('Ошибка при отправке письма через Gmail:', error);
+        throw error;
+    }
 }
+
 
 module.exports = sendGmail;
