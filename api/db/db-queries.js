@@ -91,8 +91,25 @@ async function findPersonByEmail(email) {
 
 async function updatePersonTgId(userId, tgId, collectionName) {
     const db = await connectToDatabase();
-    await db.collection(collectionName).updateOne({_id: userId }, { $set: {tgId} });
 
+    try {
+        // Преобразуем строку userId в ObjectId
+        const objectId = new ObjectId(userId);
+
+        const result = await db.collection(collectionName).updateOne(
+            { _id: objectId }, // Ищем документ по ObjectId
+            { $set: { tgId } } // Обновляем поле tgId
+        );
+
+        // Проверяем, был ли обновлен документ
+        if (result.modifiedCount === 1) {
+            console.log(`[updatePersonTgId] tgId успешно обновлен для пользователя с _id: ${userId}`);
+        } else {
+            console.log(`[updatePersonTgId] Не удалось обновить tgId для пользователя с _id: ${userId}. Документ не найден.`);
+        }
+    } catch (error) {
+        console.error(`[updatePersonTgId] Ошибка при обновлении tgId для пользователя с _id: ${userId}`, error);
+    }
 }
 
 module.exports = { findPersonById, findPersonByEmail, findStudentByTgId, findTeacherByTgId, findPersonByTgId, updatePersonTgId, Student, Teacher };
