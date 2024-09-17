@@ -21,7 +21,21 @@ module.exports = async (req, res) => {
                     await updatePersonTgId(_id, tgUserId, 'Teachers'); // Используем tgUserId
                 }
                 
-                res.status(200).json({ message: 'Регистрация завершена' });
+                // Отправляем HTML, который редиректит на index.html через 2 секунды
+                res.status(200).send(`
+                    <html>
+                        <head>
+                            <script>
+                                setTimeout(function() {
+                                    window.location.href = '/index.html';
+                                }, 2000);
+                            </script>
+                        </head>
+                        <body>
+                            <p>Регистрация завершена. Вы будете перенаправлены на главную страницу через 2 секунды.</p>
+                        </body>
+                    </html>
+                `);
             } else {
                 console.log(`[verify-code] Пользователь с _id: ${_id} не найден`);
                 res.status(404).json({ error: 'Пользователь не найден' });
