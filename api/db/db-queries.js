@@ -27,6 +27,27 @@ class Teacher extends Person {
     }
 }
 
+async function findPersonById(id) {
+    const db = await connectToDatabase();
+    
+    // Преобразуем id в ObjectId
+    const objectId = new ObjectId(id);
+
+    // Ищем студента по _id
+    const student = await db.collection('Students').findOne({ _id: objectId });
+    if (student) {
+        return new Student({ ...student });
+    }
+
+    // Ищем преподавателя по _id
+    const teacher = await db.collection('Teachers').findOne({ _id: objectId });
+    if (teacher) {
+        return new Teacher({ ...teacher });
+    }
+
+    return null; // Если пользователь не найден
+}
+
 async function findStudentByTgId(tgId) {
     const db = await connectToDatabase();
     return db.collection('Students').findOne({ tgId });
@@ -67,4 +88,4 @@ async function findPersonByEmail(email) {
     return null; // Если пользователь не найден
 }
 
-module.exports = { findPersonByEmail, findStudentByTgId, findTeacherByTgId, findPersonByTgId, Student, Teacher };
+module.exports = { findPersonById, findPersonByEmail, findStudentByTgId, findTeacherByTgId, findPersonByTgId, Student, Teacher };
