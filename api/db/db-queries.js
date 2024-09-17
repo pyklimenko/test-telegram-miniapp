@@ -29,22 +29,12 @@ class Teacher extends Person {
 
 async function findStudentByTgId(tgId) {
     const db = await connectToDatabase();
-    try {
-        return await db.collection('Students').findOne({ tgId });
-    } catch (error) {
-        console.error(`Ошибка при поиске студента с tgId ${tgId}:`, error);
-        throw error;
-    }
+    return db.collection('Students').findOne({ tgId });
 }
 
 async function findTeacherByTgId(tgId) {
     const db = await connectToDatabase();
-    try {
-        return await db.collection('Teachers').findOne({ tgId });
-    } catch (error) {
-        console.error(`Ошибка при поиске преподавателя с tgId ${tgId}:`, error);
-        throw error;
-    }
+    return db.collection('Teachers').findOne({ tgId });
 }
 
 async function findPersonByTgId(tgId) {
@@ -58,7 +48,7 @@ async function findPersonByTgId(tgId) {
         return new Teacher({ ...teacher });
     }
 
-    return null; // Возвращаем null, если пользователь не найден
+    return null; // Если пользователь не найден
 }
 
 module.exports = { findStudentByTgId, findTeacherByTgId, findPersonByTgId };

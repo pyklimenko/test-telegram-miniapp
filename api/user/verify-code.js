@@ -1,5 +1,3 @@
-// v.2
-
 const { findUserByTgId, updateUserTgId } = require('../db/db-queries');
 
 module.exports = async (req, res) => {

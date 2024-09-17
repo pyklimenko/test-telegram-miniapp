@@ -1,5 +1,3 @@
-// v.2
-
 const { google } = require('googleapis');
 
 async function authorize() {

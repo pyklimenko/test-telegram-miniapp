@@ -1,5 +1,3 @@
-// v.2
-
 const { MongoClient } = require('mongodb');
 
 const uri = process.env.MARHI_MONGODB_URI;

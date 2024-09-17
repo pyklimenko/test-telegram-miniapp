@@ -1,27 +1,27 @@
-import { getTelegramUser } from '../api/telegram/telegram-web';
-import { findPersonByTgId } from '../api/db/db-queries';
-
 document.addEventListener("DOMContentLoaded", async () => {
     const loadingElement = document.getElementById('loading');
     const studentInfoElement = document.getElementById('student-info');
     const teacherInfoElement = document.getElementById('teacher-info');
 
-    const tgUser = getTelegramUser();
+    // Получаем пользователя из Telegram WebApp
+    const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
 
     if (tgUser) {
         try {
-            const person = await findPersonByTgId(tgUser.id);
+            // Делаем запрос к серверу для поиска пользователя в базе по tgId
+            const response = await fetch(`/api/user/find-by-tgId?tgId=${tgUser.id}`);
+            const person = await response.json();
             
             if (person) {
                 loadingElement.style.display = 'none';
                 
-                if (person instanceof Student) {
+                if (person.type === 'student') {
                     studentInfoElement.style.display = 'block';
                     document.getElementById('studentId').textContent = `ID: ${person.tgId}`;
                     document.getElementById('studentFirstName').textContent = `Имя: ${person.firstName}`;
                     document.getElementById('studentLastName').textContent = `Фамилия: ${person.lastName}`;
                     document.getElementById('studentGradeBook').textContent = `Номер зачётки: ${person.gradeBookId}`;
-                } else if (person instanceof Teacher) {
+                } else if (person.type === 'teacher') {
                     teacherInfoElement.style.display = 'block';
                     document.getElementById('teacherId').textContent = `ID: ${person.tgId}`;
                     document.getElementById('teacherFirstName').textContent = `Имя: ${person.firstName}`;
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     document.getElementById('teacherDepartment').textContent = `Кафедра: ${person.department}`;
                 }
             } else {
-                console.log('Пользователь не найден в базе данных', error);
+                console.log('Пользователь не найден в базе данных');
                 loadingElement.style.display = 'none';
                 window.location.href = '/public/registration.html'; 
             }

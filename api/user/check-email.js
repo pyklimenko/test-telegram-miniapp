@@ -1,5 +1,3 @@
-// v.2
-
 const { findUserByEmail } = require('../db/db-queries');
 const sendGmail = require('../google/google-auth');
 
