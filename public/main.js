@@ -1,57 +1,44 @@
-document.addEventListener("DOMContentLoaded", () => {
-    
-    const loadingElement = document.getElementById("loading");
-    const userInfoElement = document.getElementById("user-info");
+import { getTelegramUser } from '../api/telegram/telegram-web';
+import { findPersonByTgId } from '../api/db/db-queries';
 
-    // Показ троббера при загрузке страницы
-    loadingElement.style.display = "block";
+document.addEventListener("DOMContentLoaded", async () => {
+    const loadingElement = document.getElementById('loading');
+    const studentInfoElement = document.getElementById('student-info');
+    const teacherInfoElement = document.getElementById('teacher-info');
 
-    const userIdElement = document.getElementById("userId");
-    const userFirstNameElement = document.getElementById("userFirstName");
-    const userLastNameElement = document.getElementById("userLastName");
-    const userNameElement = document.getElementById("userName");
-    const userEmailElement = document.getElementById("email");
-    const userDbIdElement = document.getElementById("db-id");
+    const tgUser = getTelegramUser();
 
-    if (window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-        const user = window.Telegram.WebApp.initDataUnsafe.user;
+    if (tgUser) {
+        // Обращаемся к базе данных для поиска по tgId
+        const person = await findPersonByTgId(tgUser.id);
 
-        // Показ данных пользователя
-        fetchUserData(user.id).then(userData => {
-            // Прячем троббер и показываем информацию о пользователе
-            loadingElement.style.display = "none";
-            userInfoElement.style.display = "block";
-
-            userIdElement.textContent = `ID: ${user.id}`;
-            userFirstNameElement.textContent = `First Name: ${user.first_name}`;
-            userLastNameElement.textContent = `Last Name: ${user.last_name || "N/A"}`;
-            userNameElement.textContent = `Username: ${user.username || "N/A"}`;
-            userEmailElement.textContent = `Email: ${userData.email}`;
-            userDbIdElement.textContent = `Database ID: ${userData._id}`;
-        }).catch(error => {
-            loadingElement.style.display = "none";
-            console.error("Ошибка при получении данных из базы:", error);
-            // Если пользователя не нашли, покажем страницу регистрации
-            showRegistrationPage();
-        });
+        if (person) {
+            loadingElement.style.display = 'none';
+            
+            if (person instanceof Student) {
+                // Отображаем информацию о студенте
+                studentInfoElement.style.display = 'block';
+                document.getElementById('studentId').textContent = `ID: ${person.tgId}`;
+                document.getElementById('studentFirstName').textContent = `Имя: ${person.firstName}`;
+                document.getElementById('studentLastName').textContent = `Фамилия: ${person.lastName}`;
+                document.getElementById('studentGradeBook').textContent = `Номер зачётки: ${person.gradeBookId}`;
+            } else if (person instanceof Teacher) {
+                // Отображаем информацию о преподавателе
+                teacherInfoElement.style.display = 'block';
+                document.getElementById('teacherId').textContent = `ID: ${person.tgId}`;
+                document.getElementById('teacherFirstName').textContent = `Имя: ${person.firstName}`;
+                document.getElementById('teacherLastName').textContent = `Фамилия: ${person.lastName}`;
+                document.getElementById('teacherDepartment').textContent = `Кафедра: ${person.department}`;
+            }
+        } else {
+            loadingElement.style.display = 'none';
+            // Показываем страницу регистрации
+            window.location.href = '/public/registration.html'; 
+        }
     } else {
-        loadingElement.style.display = "none";
+        loadingElement.style.display = 'none';
         console.error("Telegram WebApp не инициализирован или пользователь не доступен");
-        showRegistrationPage();
+        // Показываем страницу регистрации
+        window.location.href = '/public/registration.html'; 
     }
 });
-
-// Функция для отправки tgId на сервер и получения данных пользователя
-async function fetchUserData(tgId) {
-    const response = await fetch(`/api/user-data?tgId=${tgId}`);
-    if (!response.ok) {
-        throw new Error('Ошибка сети при запросе данных пользователя');
-    }
-    return response.json();
-}
-
-function showRegistrationPage() {
-    const userInfoElement = document.getElementById("user-info");
-    userInfoElement.innerHTML = "<h2>Здесь будет реализована регистрация пользователя</h2>";
-    userInfoElement.style.display = "block";
-}
