@@ -1,7 +1,9 @@
 const { findPersonByTgId } = require('../db/db-queries');
 
 module.exports = async (req, res) => {
-    const { tgId } = req.query;
+    let { tgId } = req.query;
+    
+    tgId = parseInt(tgId, 10); // Преобразуем tgId в число
 
     console.log(`[find-by-tgId] Получен запрос на поиск пользователя с tgId: ${tgId}`);
 
