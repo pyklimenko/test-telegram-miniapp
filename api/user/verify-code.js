@@ -3,6 +3,8 @@ const { findPersonById } = require('../db/db-queries');
 module.exports = async (req, res) => {
     const { _id, code } = req.body;
 
+    console.log(`[verify-code] Получен запрос на сравнение ${_id} с ${code}`);
+
     try {
         const person = await findPersonById(_id);
         if (person && person.tgId === parseInt(code, 10)) {

@@ -27,6 +27,8 @@ document.getElementById('verify-code').addEventListener('click', async () => {
     const code = document.getElementById('code').value;
     const userId = localStorage.getItem('userId');  // Используем _id для поиска пользователя
 
+    console.log(`Выгружен из памяти userId ${userId}, сравниваем его с ${code}`);
+
     try {
         const response = await fetch('/api/user/verify-code', {
             method: 'POST',
