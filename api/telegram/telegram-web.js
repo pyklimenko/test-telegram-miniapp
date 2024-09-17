@@ -1,5 +1,3 @@
-// v.2
-
 export function getTelegramUser() {
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
         return window.Telegram.WebApp.initDataUnsafe.user;
