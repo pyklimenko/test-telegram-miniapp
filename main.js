@@ -1,5 +1,5 @@
-import { getTelegramUser } from '../api/telegram/telegram-web';
-import { findPersonByTgId } from '../api/db/db-queries';
+import { getTelegramUser } from './api/telegram/telegram-web';
+import { findPersonByTgId } from './api/db/db-queries';
 
 document.addEventListener("DOMContentLoaded", async () => {
     const loadingElement = document.getElementById('loading');
