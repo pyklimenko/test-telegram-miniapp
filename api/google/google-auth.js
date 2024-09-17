@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
 
-async function authorize() {
+async function googleAuthorize() {
     const client_id = process.env.CLIENT_ID;
     const client_secret = process.env.CLIENT_SECRET;
     const redirect_uris = [process.env.REDIRECT_URIS];
