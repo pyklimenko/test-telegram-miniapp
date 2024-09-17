@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Если пользователь не найден (404)
                 console.log('Пользователь не найден в базе данных');
                 loadingElement.style.display = 'none';
-                window.location.href = '/registration.html'; 
+                window.location.href = '/public/registration.html'; 
             } else {
                 // Обработка других статусов ошибок
                 console.error(`Ошибка сервера: ${response.status}`);
