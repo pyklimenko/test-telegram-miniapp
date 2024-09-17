@@ -51,4 +51,4 @@ async function findPersonByTgId(tgId) {
     return null; // Если пользователь не найден
 }
 
-module.exports = { findStudentByTgId, findTeacherByTgId, findPersonByTgId };
+module.exports = { findStudentByTgId, findTeacherByTgId, findPersonByTgId, Student, Teacher };

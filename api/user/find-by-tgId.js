@@ -1,8 +1,8 @@
-const { findPersonByTgId } = require('../db/db-queries');
+const { findPersonByTgId, Student, Teacher } = require('../db/db-queries');  // Импорт классов и функций
 
 module.exports = async (req, res) => {
     let { tgId } = req.query;
-    
+
     tgId = parseInt(tgId, 10); // Преобразуем tgId в число
 
     console.log(`[find-by-tgId] Получен запрос на поиск пользователя с tgId: ${tgId}`);
