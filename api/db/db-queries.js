@@ -89,4 +89,10 @@ async function findPersonByEmail(email) {
     return null; // Если пользователь не найден
 }
 
-module.exports = { findPersonById, findPersonByEmail, findStudentByTgId, findTeacherByTgId, findPersonByTgId, Student, Teacher };
+async function updatePersonTgId(userId, tgId, collectionName) {
+    const db = await connectToDatabase();
+    await db.collection(collectionName).updateOne({_id: userId }, { $set: {tgId} });
+
+}
+
+module.exports = { findPersonById, findPersonByEmail, findStudentByTgId, findTeacherByTgId, findPersonByTgId, updatePersonTgId, Student, Teacher };
