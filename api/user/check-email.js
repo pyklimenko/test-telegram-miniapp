@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
 
             // Отправляем код на почту
             await sendGmail(person.email, 'Код регистрации в MARHIEduTrack', 
-                `Привет, ${person.firstName}. Чтобы завершить регистрацию, используй код ${person.tgId}.`
+                `Привет, ${person.firstName}. Чтобы завершить регистрацию, используй код ${person._id}.`
             );
         } else {
             console.log(`[check-email] Пользователь с email: ${email} не найден`);

@@ -6,8 +6,7 @@ module.exports = async (req, res) => {
     console.log(`[verify-code] Получен запрос на сравнение ${_id} с ${code}`);
 
     try {
-        const person = await findPersonById(_id);
-        if (person && person.tgId === parseInt(code, 10)) {
+        if (_id === code) {
             console.log(`[verify-code] Код верный, регистрация завершена для пользователя с _id: ${_id}`);
             res.status(200).json({ message: 'Регистрация завершена' });
         } else {
