@@ -50,6 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 document.getElementById('result').textContent = 'Вы успешно зарегистрировались!';
+                // Перенаправление на index.html через 2 секунды
+                setTimeout(() => {
+                    window.location.href = '/index.html';
+                }, 2000);
             } else {
                 document.getElementById('result').textContent = 'Неверный код';
             }
