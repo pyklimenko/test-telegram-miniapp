@@ -1,5 +1,5 @@
 const { findPersonByEmail } = require('../db/db-queries');
-const sendGmail = require('../google/google-auth');
+const sendGmail = require('../google/google-mail');
 
 module.exports = async (req, res) => {
     const { email } = req.body;
