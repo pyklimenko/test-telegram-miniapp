@@ -51,4 +51,20 @@ async function findPersonByTgId(tgId) {
     return null; // Если пользователь не найден
 }
 
-module.exports = { findStudentByTgId, findTeacherByTgId, findPersonByTgId, Student, Teacher };
+async function findPersonByEmail(email) {
+    const db = await connectToDatabase();
+
+    const student = await db.collection('Students').findOne({ email });
+    if (student) {
+        return new Student({ ...student });
+    }
+
+    const teacher = await db.collection('Teachers').findOne({ email });
+    if (teacher) {
+        return new Teacher({ ...teacher });
+    }
+
+    return null; // Если пользователь не найден
+}
+
+module.exports = { findPersonByEmail, findStudentByTgId, findTeacherByTgId, findPersonByTgId, Student, Teacher };

@@ -1,13 +1,19 @@
-const { findUserByTgId, updateUserTgId } = require('../db/db-queries');
+const { findPersonById } = require('../db/db-queries');
 
 module.exports = async (req, res) => {
-    const { code } = req.body;
-    const user = await findUserByTgId(code);
+    const { _id, code } = req.body;
 
-    if (user) {
-        await updateUserTgId(user._id, code, user.student ? 'Students' : 'Teachers');
-        res.status(200).json({ message: 'Вы успешно зарегистрировались!' });
-    } else {
-        res.status(400).json({ error: 'Неверный код' });
+    try {
+        const person = await findPersonById(_id);
+        if (person && person.tgId === parseInt(code, 10)) {
+            console.log(`[verify-code] Код верный, регистрация завершена для пользователя с _id: ${_id}`);
+            res.status(200).json({ message: 'Регистрация завершена' });
+        } else {
+            console.log(`[verify-code] Неверный код для пользователя с _id: ${_id}`);
+            res.status(400).json({ error: 'Неверный код' });
+        }
+    } catch (error) {
+        console.error(`[verify-code] Ошибка при проверке кода для пользователя с _id: ${_id}`, error);
+        res.status(500).json({ error: 'Ошибка сервера' });
     }
 };

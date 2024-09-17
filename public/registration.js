@@ -10,6 +10,9 @@ document.getElementById('email-form').addEventListener('submit', async (event) =
         });
 
         if (response.ok) {
+            const data = await response.json();
+            // Сохраняем _id пользователя для проверки
+            localStorage.setItem('userId', data._id);
             document.getElementById('code-section').style.display = 'block';
         } else {
             document.getElementById('result').textContent = 'Пользователь не найден';
@@ -22,12 +25,13 @@ document.getElementById('email-form').addEventListener('submit', async (event) =
 
 document.getElementById('verify-code').addEventListener('click', async () => {
     const code = document.getElementById('code').value;
+    const userId = localStorage.getItem('userId');  // Используем _id для поиска пользователя
 
     try {
         const response = await fetch('/api/user/verify-code', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code })
+            body: JSON.stringify({ _id: userId, code })
         });
 
         if (response.ok) {
