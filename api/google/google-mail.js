@@ -1,9 +1,25 @@
 const { google } = require('googleapis');
 const googleAuthorize = require('./google-auth');
 
+async function sendGmailWithRetry(to, subject, message, retryCount = 3) {
+    for (let attempt = 1; attempt <= retryCount; attempt++) {
+        try {
+            await sendGmail(to, subject, message);
+            return; // Если письмо успешно отправлено
+        } catch (error) {
+            console.error(`Попытка ${attempt} отправки письма не удалась. Ошибка:`, error);
+            if (attempt === retryCount) {
+                throw new Error('Письмо не отправлено после нескольких попыток');
+            }
+        }
+    }
+}
+
 async function sendGmail(to, subject, message) {
     try {
         console.log('Пытаемся отправить письмо...');
+        const startTime = new Date();  // Логирование времени начала отправки
+
         console.log(`Отправка на адрес: ${to}`);
         console.log(`Тема письма: ${subject}`);
         console.log('Текст сообщения:', message);
@@ -32,24 +48,38 @@ async function sendGmail(to, subject, message) {
             .replace(/=+$/, '');
 
         console.log('Отправляем письмо...');
-        const result = await gmail.users.messages.send({
-            userId: 'me',
-            requestBody: {
-                raw: encodedMessage,
-            },
-        });
+
+        // Добавляем таймаут на отправку письма
+        const result = await Promise.race([
+            gmail.users.messages.send({
+                userId: 'me',
+                requestBody: {
+                    raw: encodedMessage,
+                },
+            }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Отправка письма превысила лимит времени')), 10000)) // 10 секунд
+        ]);
+
+        console.log(`Операция завершена за ${new Date() - startTime} мс`);  // Время выполнения
 
         // Проверка статуса ответа
         if (result.status === 200) {
             console.log(`Письмо успешно отправлено: ${result.data.id}`);
+        } else if (result.status === 429) {
+            console.error('Превышены квоты на запросы к API. Попробуйте позже.');
+            throw new Error('Превышены квоты API');
         } else {
             console.error(`Ошибка отправки письма. Статус: ${result.status}`);
         }
 
     } catch (error) {
-        console.error('Ошибка при отправке письма через Gmail:', error);
+        if (error.response) {
+            console.error('Ошибка при отправке письма:', error.response.data);
+        } else {
+            console.error('Ошибка при отправке письма:', error.message);
+        }
         throw error;
     }
 }
 
-module.exports = sendGmail;
+module.exports = sendGmailWithRetry;

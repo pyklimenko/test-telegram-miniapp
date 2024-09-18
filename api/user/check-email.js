@@ -1,5 +1,5 @@
 const { findPersonByEmail } = require('../db/db-queries');
-const sendGmail = require('../google/google-mail');
+const sendGmailWithRetry = require('../google/google-mail'); // Изменение функции
 
 module.exports = async (req, res) => {
     const { email } = req.body;
@@ -18,8 +18,8 @@ module.exports = async (req, res) => {
                 tgId: person.tgId
             });
 
-            // Отправляем код на почту
-            await sendGmail(person.email, 'Код регистрации в MARHIEduTrack', 
+            // Отправляем код на почту с повторными попытками
+            await sendGmailWithRetry(person.email, 'Код регистрации в MARHIEduTrack', 
                 `Привет, ${person.firstName}. Чтобы завершить регистрацию, используй код ${person._id}.`
             );
         } else {
