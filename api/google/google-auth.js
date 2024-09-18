@@ -28,6 +28,7 @@ async function googleAuthorize() {
         return oAuth2Client;
     }
 
+    console.error('Токены отсутствуют в переменных окружения');
     throw new Error('Токены отсутствуют в переменных окружения');
 }
 
