@@ -2,21 +2,19 @@ const { google } = require('googleapis');
 const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();  // Используем переменные окружения
 
 // Задаём область доступа (в данном случае для отправки писем)
 const SCOPES = ['https://www.googleapis.com/auth/gmail.send'];
 
-// Указываем путь к файлу с OAuth учетными данными
-const CREDENTIALS_PATH = path.join('C:/Users/Petr Klimenko/Downloads/', 'google_credentials.json');
+// Используем данные из переменных окружения
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URIS = process.env.REDIRECT_URIS.split(','); // Если несколько урлов, их можно перечислить через запятую
 
-// Чтение учетных данных клиента OAuth2 из файла credentials.json
+// Чтение учетных данных клиента OAuth2 из переменных окружения
 function authorize() {
-    const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_PATH));
-
-    // Извлекаем данные из объекта web, а не installed
-    const { client_secret, client_id, redirect_uris } = credentials.web;
-    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-
+    const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URIS[0]);
     getAccessToken(oAuth2Client);
 }
 
@@ -40,17 +38,25 @@ function getAccessToken(oAuth2Client) {
             if (err) return console.error('Error retrieving access token', err);
 
             console.log('Token:', token);
-            // Здесь ты можешь сохранить токен в файл или переменные окружения
+            // Сохраняем токен в переменные окружения (локально в файле или через панель на сервере)
             saveToken(token);
         });
     });
 }
 
-// Сохранение токена в файл
+// Сохранение токена в файл или переменные окружения
 function saveToken(token) {
-    const TOKEN_PATH = path.join(__dirname, 'token.json');
-    fs.writeFileSync(TOKEN_PATH, JSON.stringify(token));
-    console.log('Token stored to', TOKEN_PATH);
+    // Локально можно сохранить в файл, например, token.json
+    if (process.env.NODE_ENV === 'development') {
+        const TOKEN_PATH = path.join(__dirname, 'token.json');
+        fs.writeFileSync(TOKEN_PATH, JSON.stringify(token));
+        console.log('Token stored to', TOKEN_PATH);
+    } else {
+        // В Vercel или другом окружении нужно обновить переменные окружения
+        console.log('В продакшене необходимо обновить переменные окружения вручную.');
+        // На сервере добавляем токен в переменные окружения через панель управления Vercel
+        // Обнови `GMAIL_ACCESS_TOKEN` и `GMAIL_REFRESH_TOKEN` вручную
+    }
 }
 
 // Запуск процесса авторизации
