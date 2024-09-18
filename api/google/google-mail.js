@@ -57,8 +57,8 @@ async function sendGmail(to, subject, message) {
                     raw: encodedMessage,
                 },
             }),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Отправка письма превысила лимит времени')), 10000)) // 10 секунд
-        ]);
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Отправка письма превысила лимит времени')), 20000)) // 20 секунд
+        ]);        
 
         console.log(`Операция завершена за ${new Date() - startTime} мс`);  // Время выполнения
 
