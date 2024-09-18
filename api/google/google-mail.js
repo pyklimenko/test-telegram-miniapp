@@ -74,7 +74,13 @@ async function sendGmail(to, subject, message) {
 
     } catch (error) {
         if (error.response) {
+            // Логирование более подробного ответа об ошибке от Google API
             console.error('Ошибка при отправке письма:', error.response.data);
+            console.error('Ошибка от Google API:', {
+                status: error.response.status,
+                headers: error.response.headers,
+                data: error.response.data
+            });
         } else {
             console.error('Ошибка при отправке письма:', error.message);
         }

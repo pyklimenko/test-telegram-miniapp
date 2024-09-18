@@ -19,17 +19,31 @@ async function googleAuthorize() {
     console.log('Access Token:', !!accessToken);
     console.log('Refresh Token:', !!refreshToken);
 
-    if (accessToken && refreshToken) {
-        oAuth2Client.setCredentials({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-        });
-        console.log('Токены успешно установлены.');
-        return oAuth2Client;
+    try {
+        if (accessToken && refreshToken) {
+            oAuth2Client.setCredentials({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+            });
+            console.log('Токены успешно установлены.');
+            return oAuth2Client;
+        } else {
+            console.error('Токены отсутствуют в переменных окружения');
+            throw new Error('Токены отсутствуют в переменных окружения');
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error('Ошибка при авторизации:', error.response.data);
+            console.error('Ошибка от Google API:', {
+                status: error.response.status,
+                headers: error.response.headers,
+                data: error.response.data
+            });
+        } else {
+            console.error('Ошибка при авторизации:', error.message);
+        }
+        throw error;
     }
-
-    console.error('Токены отсутствуют в переменных окружения');
-    throw new Error('Токены отсутствуют в переменных окружения');
 }
 
 module.exports = googleAuthorize;
