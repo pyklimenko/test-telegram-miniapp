@@ -39,7 +39,13 @@ async function sendGmail(to, subject, message) {
             },
         });
 
-        console.log(`Письмо успешно отправлено: ${result.data.id}`);
+        // Проверка статуса ответа
+        if (result.status === 200) {
+            console.log(`Письмо успешно отправлено: ${result.data.id}`);
+        } else {
+            console.error(`Ошибка отправки письма. Статус: ${result.status}`);
+        }
+
     } catch (error) {
         console.error('Ошибка при отправке письма через Gmail:', error);
         throw error;
