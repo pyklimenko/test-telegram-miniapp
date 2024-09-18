@@ -10,7 +10,7 @@ const SCOPES = ['https://www.googleapis.com/auth/gmail.send'];
 // Используем данные из переменных окружения
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URIS = process.env.REDIRECT_URIS.split(','); // Если несколько урлов, их можно перечислить через запятую
+const REDIRECT_URIS = process.env.REDIRECT_URIS ? process.env.REDIRECT_URIS.split(',') : [];
 
 // Чтение учетных данных клиента OAuth2 из переменных окружения
 function authorize() {
