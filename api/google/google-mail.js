@@ -49,6 +49,8 @@ async function sendGmail(to, subject, message) {
 
         console.log('Отправляем письмо...');
 
+        console.log('Запрос на отправку письма инициирован...');
+
         // Добавляем таймаут на отправку письма
         const result = await Promise.race([
             gmail.users.messages.send({
@@ -57,8 +59,10 @@ async function sendGmail(to, subject, message) {
                     raw: encodedMessage,
                 },
             }),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Отправка письма превысила лимит времени')), 20000)) // 20 секунд
-        ]);        
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Отправка письма превысила лимит времени')), 60000)) // 60 секунд
+        ]);
+        
+        console.log('Ответ от Gmail API получен...');
 
         console.log(`Операция завершена за ${new Date() - startTime} мс`);  // Время выполнения
 
