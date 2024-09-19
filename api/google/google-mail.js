@@ -28,6 +28,7 @@ async function sendGmail(to, subject, message) {
         console.log('Авторизация завершена.');
 
         const gmail = google.gmail({ version: 'v1', auth });
+        console.log('Gmail API инициализирован.');
 
         const subjectBase64 = `=?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`;
         const email = [
@@ -51,16 +52,12 @@ async function sendGmail(to, subject, message) {
 
         console.log('Запрос на отправку письма инициирован...');
 
-        // Добавляем таймаут на отправку письма
-        const result = await Promise.race([
-            gmail.users.messages.send({
-                userId: 'me',
-                requestBody: {
-                    raw: encodedMessage,
-                },
-            }),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Отправка письма превысила лимит времени')), 60000)) // 60 секунд
-        ]);
+        const result = await gmail.users.messages.send({
+            userId: 'me',
+            requestBody: {
+                raw: encodedMessage,
+            },
+        });
         
         console.log('Ответ от Gmail API получен...');
 
